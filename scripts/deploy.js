@@ -1,24 +1,34 @@
+// scripts/deploy.js
+require("dotenv").config();
+const hre = require("hardhat");
+
 async function main() {
-    const [deployer] = await ethers.getSigners();
-    console.log("Deploying contracts with the account:", deployer.address);
-  
-    const JobBoard = await ethers.getContractFactory("JobBoard");
-    const jobBoard = await JobBoard.deploy();
-    console.log("JobBoard contract deployed to:", jobBoard.address);
-  
-    const DAOHiring = await ethers.getContractFactory("DAOHiring");
-    const daoHiring = await DAOHiring.deploy();
-    console.log("DAOHiring contract deployed to:", daoHiring.address);
-  
-    const ReputationSystem = await ethers.getContractFactory("ReputationSystem");
-    const reputationSystem = await ReputationSystem.deploy();
-    console.log("ReputationSystem contract deployed to:", reputationSystem.address);
-  }
-  
-  main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-      console.error(error);
-      process.exit(1);
-    });
-  
+  // 1. Deployer
+  const [deployer] = await hre.ethers.getSigners();
+  console.log("Deploying contracts with account:", deployer.address);
+
+  // 2. DAOHiring
+  const DAOHiringFactory = await hre.ethers.getContractFactory("DAOHiring");
+  const daoHiring = await DAOHiringFactory.deploy(/* constructor args if any */);
+  await daoHiring.waitForDeployment();
+  console.log("→ DAOHiring deployed to:", daoHiring.target);
+
+  // 3. JobBoard
+  const JobBoardFactory = await hre.ethers.getContractFactory("JobBoard");
+  const jobBoard = await JobBoardFactory.deploy();
+  await jobBoard.waitForDeployment();
+  console.log("→ JobBoard deployed to:", jobBoard.target);
+
+  // 4. ReputationSystem
+  const ReputationFactory = await hre.ethers.getContractFactory("ReputationSystem");
+  const reputation = await ReputationFactory.deploy();
+  await reputation.waitForDeployment();
+  console.log("→ ReputationSystem deployed to:", reputation.target);
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error("❌ Deployment failed:", error);
+    process.exit(1);
+  });

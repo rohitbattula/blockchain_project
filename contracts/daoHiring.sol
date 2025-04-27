@@ -23,7 +23,15 @@ contract DAOHiring {
     // Employer can post a job
     function postJob(string memory title, string memory description, uint256 paymentAmount) public {
         jobCount++;
-        jobs;
+        
+        Job storage newJob = jobs[jobCount];
+        newJob.id = jobCount;
+        newJob.employer = msg.sender;
+        newJob.title = title;
+        newJob.description = description;
+        newJob.paymentAmount = paymentAmount;
+        newJob.isActive = true;
+        
         emit JobPosted(jobCount, msg.sender, title);
     }
 
@@ -31,6 +39,7 @@ contract DAOHiring {
     function voteForApplicant(uint256 jobId, address applicant) public {
         require(jobs[jobId].isActive, "Job is not active.");
         require(!jobs[jobId].voted[msg.sender], "You have already voted.");
+        
         jobs[jobId].voted[msg.sender] = true;
         jobs[jobId].applicants.push(applicant);
         emit VoteCast(jobId, msg.sender, applicant);
@@ -39,12 +48,14 @@ contract DAOHiring {
     // Employer can make the final hiring decision
     function makeHiringDecision(uint256 jobId, address applicant) public {
         require(msg.sender == jobs[jobId].employer, "Only employer can make the decision.");
+        
         uint256 votes = 0;
         for (uint i = 0; i < jobs[jobId].applicants.length; i++) {
             if (jobs[jobId].applicants[i] == applicant) {
                 votes++;
             }
         }
+
         require(votes > jobs[jobId].applicants.length / 2, "Applicant did not receive majority votes.");
         jobs[jobId].isActive = false;
         payable(applicant).transfer(jobs[jobId].paymentAmount);
