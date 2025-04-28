@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// match the actual filename on disk
 import "./reputationSystem.sol";
 
 contract JobBoard {
@@ -13,22 +12,16 @@ contract JobBoard {
         uint256 paymentAmount;
         bool isActive;
     }
-
     struct Application {
         address applicant;
         string coverLetter;
         bool isAccepted;
     }
 
+    ReputationSystem public reputationSystem;
     uint256 public jobCount;
     mapping(uint256 => Job) public jobs;
     mapping(uint256 => Application[]) public applications;
-
-    ReputationSystem public reputationSystem;
-
-    event JobPosted(uint256 indexed jobId, address indexed employer, string title, uint256 paymentAmount);
-    event JobApplied(uint256 indexed jobId, address indexed applicant, string coverLetter);
-    event JobAccepted(uint256 indexed jobId, address indexed applicant, uint256 paymentAmount);
 
     constructor(address _reputationSystem) {
         reputationSystem = ReputationSystem(_reputationSystem);
@@ -37,30 +30,52 @@ contract JobBoard {
     function postJob(string memory title, string memory description, uint256 paymentAmount) external {
         jobCount += 1;
         jobs[jobCount] = Job(jobCount, msg.sender, title, description, paymentAmount, true);
-        emit JobPosted(jobCount, msg.sender, title, paymentAmount);
     }
 
     function applyForJob(uint256 jobId, string memory coverLetter) external {
-        require(jobs[jobId].isActive, "Job is not active");
+        require(jobs[jobId].isActive, "Job not active");
         applications[jobId].push(Application(msg.sender, coverLetter, false));
-        emit JobApplied(jobId, msg.sender, coverLetter);
     }
 
-    function acceptApplication(uint256 jobId, uint256 applicationIndex) external payable {
+    function acceptApplication(uint256 jobId, uint256 idx) external payable {
         Job storage j = jobs[jobId];
         require(msg.sender == j.employer, "Only employer");
         require(j.isActive, "Already closed");
 
-        Application storage a = applications[jobId][applicationIndex];
+        Application storage a = applications[jobId][idx];
         require(!a.isAccepted, "Already accepted");
 
+        // mark accepted + close
         a.isAccepted = true;
         j.isActive = false;
 
-        require(msg.value == j.paymentAmount, "Incorrect payment");
+        // pay out
+        require(msg.value == j.paymentAmount, "Wrong value");
         payable(a.applicant).transfer(msg.value);
 
+        // bump reputation
         reputationSystem.increaseReputation(a.applicant, 1);
-        emit JobAccepted(jobId, a.applicant, msg.value);
+    }
+
+    /// 📦 NEW helper: return arrays of all applications for a job
+    function getApplicationsForJob(uint256 jobId)
+        external
+        view
+        returns (
+            address[] memory addrs,
+            string[] memory letters,
+            bool[] memory accepted
+        )
+    {
+        Application[] storage apps = applications[jobId];
+        uint256 n = apps.length;
+        addrs    = new address[](n);
+        letters  = new string[](n);
+        accepted = new bool[](n);
+        for (uint i = 0; i < n; i++) {
+            addrs[i]    = apps[i].applicant;
+            letters[i]  = apps[i].coverLetter;
+            accepted[i] = apps[i].isAccepted;
+        }
     }
 }
