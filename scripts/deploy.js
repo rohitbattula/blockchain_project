@@ -1,34 +1,31 @@
 // scripts/deploy.js
 require("dotenv").config();
-const hre = require("hardhat");
+const { ethers } = require("hardhat");
 
 async function main() {
-  // 1. Deployer
-  const [deployer] = await hre.ethers.getSigners();
-  console.log("Deploying contracts with account:", deployer.address);
+  // 1️⃣ Get deployer account
+  const [deployer] = await ethers.getSigners();
+  console.log("👷‍♂️  Deploying contracts with account:", deployer.address);
 
-  // 2. DAOHiring
-  const DAOHiringFactory = await hre.ethers.getContractFactory("DAOHiring");
-  const daoHiring = await DAOHiringFactory.deploy(/* constructor args if any */);
-  await daoHiring.waitForDeployment();
-  console.log("→ DAOHiring deployed to:", daoHiring.target);
-
-  // 3. JobBoard
-  const JobBoardFactory = await hre.ethers.getContractFactory("JobBoard");
-  const jobBoard = await JobBoardFactory.deploy();
-  await jobBoard.waitForDeployment();
-  console.log("→ JobBoard deployed to:", jobBoard.target);
-
-  // 4. ReputationSystem
-  const ReputationFactory = await hre.ethers.getContractFactory("ReputationSystem");
-  const reputation = await ReputationFactory.deploy();
+  // 2️⃣ Deploy ReputationSystem
+  const RepFactory = await ethers.getContractFactory("ReputationSystem");
+  const reputation = await RepFactory.deploy();
+  // waitUntil on‐chain
   await reputation.waitForDeployment();
-  console.log("→ ReputationSystem deployed to:", reputation.target);
+  console.log("✅ ReputationSystem deployed to:", reputation.target);
+
+  // 3️⃣ Deploy JobBoard, passing in the reputation system address
+  const JBFactory = await ethers.getContractFactory("JobBoard");
+  const jobBoard = await JBFactory.deploy(reputation.target);
+  await jobBoard.waitForDeployment();
+  console.log("✅ JobBoard deployed to:", jobBoard.target);
+
+  // If you have other contracts to deploy, do it here...
 }
 
 main()
   .then(() => process.exit(0))
-  .catch((error) => {
-    console.error("❌ Deployment failed:", error);
+  .catch((err) => {
+    console.error("❌ Deployment failed:", err);
     process.exit(1);
   });
