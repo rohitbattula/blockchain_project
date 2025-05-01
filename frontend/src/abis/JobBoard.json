@@ -1,90 +1,14 @@
 [
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "jobId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
         "internalType": "address",
-        "name": "employer",
+        "name": "_reputationSystem",
         "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "applicant",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "paymentAmount",
-        "type": "uint256"
       }
     ],
-    "name": "JobAccepted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "jobId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "applicant",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "coverLetter",
-        "type": "string"
-      }
-    ],
-    "name": "JobApplied",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "jobId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "employer",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "paymentAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "JobPosted",
-    "type": "event"
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
     "inputs": [
@@ -95,26 +19,13 @@
       },
       {
         "internalType": "uint256",
-        "name": "applicationIndex",
+        "name": "idx",
         "type": "uint256"
       }
     ],
     "name": "acceptApplication",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "applicationCount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -136,11 +47,6 @@
         "internalType": "address",
         "name": "applicant",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "jobId",
-        "type": "uint256"
       },
       {
         "internalType": "string",
@@ -182,9 +88,25 @@
         "type": "uint256"
       }
     ],
-    "name": "deactivateJob",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getApplicationsForJob",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "addrs",
+        "type": "address[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "letters",
+        "type": "string[]"
+      },
+      {
+        "internalType": "bool[]",
+        "name": "accepted",
+        "type": "bool[]"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -265,6 +187,19 @@
     "name": "postJob",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "reputationSystem",
+    "outputs": [
+      {
+        "internalType": "contract ReputationSystem",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]
