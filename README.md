@@ -60,7 +60,7 @@ blockchain_project/
 
 1. **Clone** this repository  
    ```bash
-   git clone https://github.com/your-username/blockchain_project.git
+   git clone https://github.com/rohitbattula/blockchain_project.git
    cd blockchain_project
    ```
 
@@ -71,8 +71,7 @@ blockchain_project/
 
 3. **Create** a `.env` in the project root:  
    ```env
-   MNEMONIC="your twelve word mnemonic"
-   INFURA_API_KEY="your_infura_project_id"
+   MNEMONIC="private key"
    ```
 
 ---
@@ -84,10 +83,6 @@ blockchain_project/
 npx hardhat compile
 ```
 
-### Run Tests  
-```bash
-npx hardhat test
-```
 
 ### Deploy to Sepolia  
 ```bash
@@ -141,6 +136,4 @@ Note the deployed addresses for `ReputationSystem` and `JobBoard`.
 
 ---
 
-## License
 
-Released under the [MIT License](./LICENSE).
