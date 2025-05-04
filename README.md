@@ -2,9 +2,15 @@
 
 A full-stack Ethereum DApp that lets employers post jobs, applicants apply with cover letters, and employers accept one applicant per job—automatically transferring payment and bumping on‐chain reputation points.
 
-This project uses Hardhat for smart-contract development and Vite + React + Tailwind CSS for the frontend.
+This project uses Hardhat for smart-contract development and Vite + React for the frontend.
 
 ---
+
+#  Video Presentation
+
+Watch our project demo here:  
+[Project Video Presentation](https://drive.google.com/file/d/1vMwYDfUXgbgWR9WyW7FobTDA8Tz4nNSv/view?usp=sharing)
+
 
 ## Repository Structure
 
