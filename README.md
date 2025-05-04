@@ -9,7 +9,7 @@ This project uses Hardhat for smart-contract development and Vite + React for th
 #  Video Presentation
 
 Watch our project demo here:  
-[Project Video Presentation](https://drive.google.com/file/d/1vMwYDfUXgbgWR9WyW7FobTDA8Tz4nNSv/view?usp=sharing)
+[View the Project Video Presentation here](https://drive.google.com/file/d/16D2XelmKgY-NlYI9SvHQ6uq18FVbgDXJ/view?usp=sharing)
 
 
 ## Repository Structure
